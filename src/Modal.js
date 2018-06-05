@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Portal from './Portal';
+import ReactDOM from 'react-dom';
 import Fade from './Fade';
 import {
   getOriginalBodyPadding,
@@ -286,29 +286,28 @@ class Modal extends React.Component {
         timeout: hasTransition ? this.props.backdropTransition.timeout : 0,
       };
 
-      return (
-        <Portal node={this._element}>
-          <div className={mapToCssModules(wrapClassName)}>
-            <Fade
-              {...modalAttributes}
-              {...modalTransition}
-              in={isOpen}
-              onEntered={this.onOpened}
-              onExited={this.onClosed}
-              cssModule={cssModule}
-              className={mapToCssModules(classNames('modal', modalClassName), cssModule)}
-            >
-              {external}
-              {this.renderModalDialog()}
-            </Fade>
-            <Fade
-              {...backdropTransition}
-              in={isOpen && !!backdrop}
-              cssModule={cssModule}
-              className={mapToCssModules(classNames('modal-backdrop', backdropClassName), cssModule)}
-            />
-          </div>
-        </Portal>
+      return ReactDOM.createPortal(
+        <div className={mapToCssModules(wrapClassName)}>
+          <Fade
+            {...modalAttributes}
+            {...modalTransition}
+            in={isOpen}
+            onEntered={this.onOpened}
+            onExited={this.onClosed}
+            cssModule={cssModule}
+            className={mapToCssModules(classNames('modal', modalClassName), cssModule)}
+          >
+            {external}
+            {this.renderModalDialog()}
+          </Fade>
+          <Fade
+            {...backdropTransition}
+            in={isOpen && !!backdrop}
+            cssModule={cssModule}
+            className={mapToCssModules(classNames('modal-backdrop', backdropClassName), cssModule)}
+          />
+        </div>,
+        this._element
       );
     }
 
